@@ -25,8 +25,10 @@
 			
 			// initialization code
 			base.currentRating = base.$el.data('rating') || base.options.rating;
+			base.roundAlgo = base.$el.data('round') || base.options.round;
+			setCurrentRatingValue(base.currentRating);
 			base.nbrStars = base.$el.data('stars') || base.options.stars;
-			base.isReadonly = (!!base.$el.data('readonly')) || base.options.readonly;
+			base.isReadonly = (!! base.$el.data('readonly')) || base.options.readonly;
 			// The collection of stars in the rating.
 			base.stars = [];
 			buildWidget();
@@ -34,17 +36,45 @@
 		
 		// private/internal functions
 		
+		/**
+		 * set the current rating value and apply the rounding algorithm.
+		 */
+		function setCurrentRatingValue(value){
+			base.currentRating = value;
+			switch(base.roundAlgo) {
+				case 'floor':
+					base.currentRating = Math.floor(base.currentRating);
+					break;
+				default:
+					// fall through for invalid values
+				case 'ceil':
+					base.currentRating = Math.ceil(base.currentRating);
+					break;
+				case 'round':
+					base.currentRating = Math.round(base.currentRating);
+					break;
+				case 'half': // round to the nearest half
+					base.currentRating = Math.round(2 * base.currentRating)/2;
+					break;
+			}
+			base.hasHalfStar = (base.roundAlgo == 'half');
+			base.halfStarIndex = base.hasHalfStar ? (Math.ceil(base.currentRating) - 1) : null;
+		}
+		
 		function buildWidget(){
 			if (base.currentRating < 0 || base.currentRating > base.nbrStars) {
 				throw Error('Current rating is out of bounds.');
 			}
 			
+			var currentRating = Math.floor(base.currentRating);
 			for (var i = 0; i < base.nbrStars; i++) {
 				var $star = $('<li></li>');
 				$star.addClass('c-rating__item');
 				$star.data('index', i);
-				if (i < base.currentRating) {
+				if (i < currentRating) {
 					$star.addClass('is-active');
+				} else if (base.hasHalfStar && i == base.halfStarIndex) {
+					$star.addClass('half-star');
 				}
 				$star.appendTo(base.$el);
 				base.stars.push($star);
@@ -80,6 +110,10 @@
 		
 		function starMouseOverEventListenerHandler(e){
 			$.each(base.stars, function(index, $item){
+				if ($item.hasClass('half-star')) {
+					$item.removeClass('half-star');
+				}
+				
 				if (index <= parseInt(e.data.star.data('index'))) {
 					$item.addClass('is-active');
 				} else {
@@ -141,9 +175,17 @@
 			}
 			
 			base.currentRating = value || base.currentRating;
+			if (null !== value) {
+				// update current-rating based on the rounding algo.
+				setCurrentRatingValue(base.currentRating);
+			}
+			var currentRating = Math.floor(base.currentRating);
 			$.each(base.stars, function(index, $item){
-				if (index < base.currentRating) {
+				if (index < currentRating) {
 					$item.addClass('is-active');
+				} else if (base.hasHalfStar && index == base.halfStarIndex) {
+					$item.removeClass('is-active');
+					$item.addClass('half-star');
 				} else {
 					$item.removeClass('is-active');
 				}
@@ -191,6 +233,8 @@
 		stars: 5,
 		// whether to freeze control?
 		readonly: false,
+		// the rounding algorithm to use (floor, ceil, round, half)
+		round: 'ceil',
 		// callback function when voted (fn is passed one arg, i.e. rating value)
 		onVote: null
 	};

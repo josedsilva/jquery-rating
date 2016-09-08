@@ -22,3 +22,7 @@
 .c-rating:not(.readonly) .c-rating__item:hover {
 	background-position: -24px 0;
 }
+
+.c-rating__item.half-star {
+	background-position: -47px 0;
+}
