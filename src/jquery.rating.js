@@ -94,9 +94,9 @@
 		 * @return nothing
 		 */
 		function attachStarEvents($star){
-			starMouseOver($star);
-			starMouseOut($star);
-			starClick($star);
+			attachStarMouseOver($star);
+			attachStarMouseOut($star);
+			attachStarClick($star);
 		}
 		
 		/**
@@ -108,7 +108,7 @@
 			detachStarClick($star);
 		}
 		
-		function starMouseOverEventListenerHandler(e){
+		function starMouseOverEventListener(e){
 			$.each(base.stars, function(index, $item){
 				if ($item.hasClass('half-star')) {
 					$item.removeClass('half-star');
@@ -120,41 +120,47 @@
 					$item.removeClass('is-active');
 				}
 			});
+			
+			base.$el.trigger("rating:mouseover", [{index: e.data.star.data('index')}]);
 		}
 		
-		function starMouseOver($star){
-			$star.on('mouseover', {star: $star}, starMouseOverEventListenerHandler);
+		function attachStarMouseOver($star){
+			$star.on('mouseover', {star: $star}, starMouseOverEventListener);
 		}
 		
 		function detachStarMouseOver($star){
-			$star.off('mouseover', starMouseOverEventListenerHandler);
+			$star.off('mouseover', starMouseOverEventListener);
 		}
 		
-		function starMouseOutEventListenerHandler(e){
+		function starMouseOutEventListener(e){
 			if (base.stars.indexOf(e.relatedTarget) === -1) {
 				setRating(null, false);
 			}
+			
+			base.$el.trigger("rating:mouseout", [{index: e.data.star.data('index')}]);
 		}
 		
-		function starMouseOut($star){
-			$star.on('mouseout', {star: $star}, starMouseOutEventListenerHandler);
+		function attachStarMouseOut($star){
+			$star.on('mouseout', {star: $star}, starMouseOutEventListener);
 		}
 		
 		function detachStarMouseOut($star){
-			$star.off('mouseout', starMouseOutEventListenerHandler);
+			$star.off('mouseout', starMouseOutEventListener);
 		}
 		
-		function starClickEventListenerHandler(e) {
+		function starClickEventListener(e) {
 			e.preventDefault();
-			setRating(parseInt(e.data.star.data('index')) + 1, true);
+			var value = parseInt(e.data.star.data('index')) + 1;
+			base.$el.trigger("rating:click", [{value: value}]);
+			setRating(value, true);
 		}
 		
-		function starClick($star){
-			$star.on('click', {star: $star}, starClickEventListenerHandler);
+		function attachStarClick($star){
+			$star.on('click', {star: $star}, starClickEventListener);
 		}
 		
 		function detachStarClick($star){
-			$star.off('click', starClickEventListenerHandler);
+			$star.off('click', starClickEventListener);
 		}
 		
 		/**
@@ -174,10 +180,14 @@
 				doCallback = true;
 			}
 			
+			var oldRating = base.currentRating;
 			base.currentRating = value || base.currentRating;
 			if (null !== value) {
 				// update current-rating based on the rounding algo.
 				setCurrentRatingValue(base.currentRating);
+				if (base.currentRating != oldRating) {
+					base.$el.trigger("rating:change", [{prevValue: oldRating, value: base.currentRating}]);
+				}
 			}
 			var currentRating = Math.floor(base.currentRating);
 			$.each(base.stars, function(index, $item){
@@ -219,6 +229,14 @@
 			});
 			base.$el.addClass('readonly');
 			base.isReadonly = true;
+		}
+		
+		base.getRating = function(){
+			return getRating();
+		}
+		
+		base.setRating = function(value){
+			setRating(value);
 		}
 		
 		// Run initializer
