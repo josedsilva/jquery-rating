@@ -9,7 +9,7 @@
 </head>
 <body>
 	<header>
-		<h1>Rating demo</h1>
+		<h1>Star rating demo</h1>
 	</header>
 	
 	<article>
@@ -19,34 +19,57 @@
 	
 	<hr />
 	
-	<p>Initial value set:</p>
-	<ul class="c-rating" id="rating-1" data-rating="2.3" data-round="floor"></ul>
+	<article>
+		<h3>Initial value set:</h3>
+		<p>Options are initialized with the "data" attribute. Rating value is floored</p>
+		<ul class="c-rating" id="rating-1" data-rating="2.3" data-round="floor"></ul>
+	</article>
 	
-	<p>Round rating to the nearest 0.5 and make readonly:</p>
-	<ul class="c-rating" id="rating-2" data-rating="3.7" data-readonly="1" data-round="half"></ul>
+	<article>
+		<h3>Round rating to the nearest 0.5 and make readonly:</h3>
+		<ul class="c-rating" id="rating-2" data-rating="3.7" data-readonly="1" data-round="half"></ul>
+	</article>
 	
-	<p>Events:</p>
-	<ul class="c-rating" id="rating-3"></ul>
-	<p id="rating-3-text">Rating text</p>
+	<article>
+		<h3>Events:</h3>
+		<p>The widget fires the following events:</p>
+		<ul>
+			<li>rating:ready - When the widget is initialized.</li>
+			<li>rating:mouseover - When the mouse is over a star.</li>
+			<li>rating:mouseout - When the mouse has left a star.</li>
+			<li>rating:click - When a star is clicked.</li>
+			<li>rating:change - When the new value of the widget is different from the previous one.</li>
+		</ul>
+		
+		<p>We bind event handlers to the widget events to show rank descriptions.</p>
+		<p id="rank-description"></p>
+		<ul class="c-rating" id="rating-3"></ul>
+	</article>
 	
-	<p>Vote and disable further interaction:</p>
-	<ul class="c-rating" id="rating-4" data-stars="10" data-rating="6.3"></ul>
+	<article>
+		<h3>Vote and disable further interaction:</h3>
+		<ul class="c-rating" id="rating-4" data-stars="10" data-rating="6.3"></ul>
+	</article>
 	
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="src/jquery.rating.js"></script>
 	<script>
-		$(".c-rating").rating();
-		// show custom rating text for rating-3
-		var $rating3Text = $("#rating-3-text");
-		var ratingText = ["Bad", "Poor", "Average", "Good", "Excellent"];
+		// show custom rank descriptions
+		var $rankdesc = $("#rank-description");
+		var ranks = ["Bad", "Poor", "Average", "Good", "Excellent"];
+		var rankDefaultText = 'Please hover over a star to see its rank description';
 		$("#rating-3")
+		.on("rating:ready", function(){
+			$rankdesc.text(rankDefaultText);
+		})
 		.on("rating:mouseover", function(e, data){
-			$rating3Text.text(ratingText[data.index]);
+			$rankdesc.text(ranks[data.index]);
 		})
 		.on("rating:mouseout", function(e, data){
-			$rating3Text.text("Rating Text");
+			$rankdesc.text(rankDefaultText);
 		})
 		.on("rating:click", function(e, data){
+			rankDefaultText = ranks[data.value - 1];
 			alert('You voted a score of ' + data.value + ' points');
 		});
 		
@@ -54,6 +77,9 @@
 			alert('oldValue: '+data.prevValue+', newValue: '+data.value);
 			$("#rating-4").getRating().setReadonly();
 		});
+		
+		// finally, initialize widgets.
+		$(".c-rating").rating();
 	</script>
 </body>
 </html>
