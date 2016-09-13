@@ -49,6 +49,7 @@ Jose F. D'Silva
 ## License
 
 GNU LESSER GENERAL PUBLIC LICENSE
+
 Version 3, 29 June 2007
 
 https://www.gnu.org/licenses/lgpl-3.0.txt
