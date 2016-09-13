@@ -44,7 +44,7 @@ You can then call the following public methods on the `$widget` object:
 * setReadonly()
 
 ## Author
-Jose D'Silva (jose at bombayworks dot se)
+Jose F. D'Silva
 
 ## License
 
