@@ -32,6 +32,7 @@
 			// The collection of stars in the rating.
 			base.stars = [];
 			buildWidget();
+			base.$el.trigger("rating:ready");
 		};
 		
 		// private/internal functions
@@ -185,9 +186,6 @@
 			if (null !== value) {
 				// update current-rating based on the rounding algo.
 				setCurrentRatingValue(base.currentRating);
-				if (base.currentRating != oldRating) {
-					base.$el.trigger("rating:change", [{prevValue: oldRating, value: base.currentRating}]);
-				}
 			}
 			var currentRating = Math.floor(base.currentRating);
 			$.each(base.stars, function(index, $item){
@@ -201,8 +199,8 @@
 				}
 			});
 			
-			if (doCallback && typeof base.options.onVote === "function") {
-				base.options.onVote(getRating());
+			if (doCallback && base.currentRating != oldRating) {
+				base.$el.trigger("rating:change", [{prevValue: oldRating, value: base.currentRating}]);
 			}
 		}
 		
@@ -215,10 +213,7 @@
 			return base.currentRating;
 		}
 		
-		// Sample Function, Uncomment to use (these are public functions)
-		// base.functionName = function(paramaters){
-		// 
-		// };
+		// public functions
 		
 		/**
 		 * Disable interactions with the widget.
@@ -243,18 +238,16 @@
 		base.init();
 	};
 	
-	// All options (except callbacks) can be set with the "data-" attribute on the element.
+	// All options can be set with the "data" attribute on the element.
 	$.Rating.defaultOptions = {
 		// current/initial rating
 		rating: 0,
-		// nbr of stars
+		// How many stars to show?
 		stars: 5,
 		// whether to freeze control?
 		readonly: false,
 		// the rounding algorithm to use (floor, ceil, round, half)
-		round: 'ceil',
-		// callback function when voted (fn is passed one arg, i.e. rating value)
-		onVote: null
+		round: 'ceil'
 	};
 	
 	$.fn.rating = function(options){
