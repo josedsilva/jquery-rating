@@ -3,7 +3,7 @@ This is a Javascript star rating plugin built as a jQuery widget. Portions of th
 https://github.com/callmenick/five-star-rating. Some additional functionality has been added.
 
 
-## Install
+## Installation
 * Download the archive and extract.
 * Link to [jQuery](https://jquery.com/download/), `jquery.rating.js` and the css file `rating.css`
 * Image sprite should be in `img/stars.svg`. You can edit the css appropriately to use a different image or path.
@@ -20,6 +20,34 @@ https://github.com/callmenick/five-star-rating. Some additional functionality ha
 
 <script>
 $("#my-rating").rating();
+</script>
+```
+
+## Options
+You can either set options on the element itself with the "data" attribute or pass them to the function.
+Following are the options:
+* `rating` - Initial rating value when the plugin is initialized. (default: 0)
+* `stars` - The number of stars to show. (default: 5)
+* `readonly` - Whether to disable user interaction with the plugin? (default: false)
+* `round` - The rounding algorithm to use (floor, ceil, round, half). (default: ceil)
+
+Example:
+```html
+<ul class="c-rating" id="my-rating" data-rating="3.4" data-readonly="1" data-round="half"></ul>
+```
+
+You could also do this:
+
+```html
+
+<ul class="c-rating" id="my-rating"></ul>
+
+<script>
+$("#my-rating").rating({
+	rating: 3.4,
+	readonly: true,
+	round: 'half'
+});
 </script>
 ```
 
