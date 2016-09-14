@@ -25,7 +25,9 @@ $("#my-rating").rating();
 
 ## Options
 You can either set options on the element itself with the "data" attribute or pass them to the function.
+
 Following are the options:
+
 * `rating` - Initial rating value when the plugin is initialized. (default: 0)
 * `stars` - The number of stars to show. (default: 5)
 * `readonly` - Whether to disable user interaction with the plugin? (default: false)
@@ -34,6 +36,10 @@ Following are the options:
 Example:
 ```html
 <ul class="c-rating" id="my-rating" data-rating="3.4" data-readonly="1" data-round="half"></ul>
+
+<script>
+$("#my-rating").rating();
+</script>
 ```
 
 You could also do this:
