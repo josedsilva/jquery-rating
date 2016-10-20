@@ -226,12 +226,28 @@
 			base.isReadonly = true;
 		}
 		
-		base.getRating = function(){
+		/**
+		 * Return the current rating value.
+		 */
+		base.getRatingValue = function(){
 			return getRating();
 		}
 		
+		/**
+		 * Set the current rating value.
+		 */
 		base.setRating = function(value){
 			setRating(value);
+		}
+		
+		/**
+		 * Destroy the widget.
+		 */
+		base.destroy = function(){
+			$.each(base.stars, function(index, $item){
+				detachStarEvents($item);
+			});
+			base.$el.remove();
 		}
 		
 		// Run initializer
