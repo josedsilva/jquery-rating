@@ -76,6 +76,7 @@ You can then call the following public methods on the `$widget` object:
 * setRating()
 * getRating()
 * setReadonly()
+* destroy()
 
 ## Author
 Jose F. D'Silva
