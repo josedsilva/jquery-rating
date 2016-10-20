@@ -229,7 +229,7 @@
 		/**
 		 * Return the current rating value.
 		 */
-		base.getRatingValue = function(){
+		base.getRating = function(){
 			return getRating();
 		}
 		
